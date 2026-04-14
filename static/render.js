@@ -7,34 +7,49 @@ function handleSubmit(e) {
   
   const data = new FormData(e.target)
   const payload = {
-    name:  data.get('name').trim(),
-    email: data.get('email').trim(),
+    date:  data.get('date').trim(),
+    tickets: data.get('tickets').trim(),
+    terms: data.get('terms') === 'on'
   }
 
-  emitter.emit('users:submit', payload)
+  emitter.emit('events:submit', payload)
 }
 
 function renderForm() {
+  let errorHtml = ''
+  if (state.error) {
+    errorHtml = `<div class="error-message">⚠ ${state.error}</div>`
+  }
   return `
     <div class="form-card">
-      <h2>Add a user</h2>
-      <form id="user-form" class="ui-form">
+      <h2>Event Registration</h2>
+      <form id="event-form" class="ui-form">
 
         <input
           class="ui-input"
-          name="name"
-          placeholder="Full name"
+          name="date"
+          type="date"
+          placeholder="Event Date (e.g., 2026-12-31)"
           required
         />
 
         <input
           class="ui-input"
-          name="email"
-          type="email"
-          placeholder="Email address"
+          name="tickets"
+          type="number"
+          placeholder="Number of Tickets (1-5)"
           required
         />
 
+        <label for="terms">
+          <input
+            class="ui-checkbox"
+            name="terms"
+            type="checkbox"
+          />
+          I agree to the Terms and Conditions
+        </label>
+        ${errorHtml}
         <button class="ui-btn" type="submit">Submit</button>
       </form>
     </div>`
@@ -47,7 +62,7 @@ export function render() {
      app.innerHTML = renderForm()
   }
 
-  const form = document.querySelector('#user-form')
+  const form = document.querySelector('#event-form')
   if(form) {
     form.addEventListener('submit', handleSubmit)
   }

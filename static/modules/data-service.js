@@ -3,20 +3,22 @@ import { emitter } from './event-emitter.js'
 const BASE = '/api'
 
 export const DataService = {
-  async createUser(payload) {
+  async registerEvent(payload) {
     try {
-      const res = await fetch(`${BASE}/users`, {
+      const res = await fetch(`${BASE}/events`, {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
         body:    JSON.stringify(payload),
       })
       if (!res.ok) {
-        throw new Error(`${res.status} ${res.statusText}`)
+        const err = await res.text()
+        throw new Error(err || 'Failed to register event')
       }
-      const user = await res.json()
-      console.log('User created:', user)
+      const event = await res.json()
+      console.log('Event registered:', event)
     } catch (err) {
-      console.error(`Error creating user: ${err.message}`)
+      console.error(`Error registering event: ${err.message}`)
+      emitter.emit('events:error', err.message)
     }
   },
 }

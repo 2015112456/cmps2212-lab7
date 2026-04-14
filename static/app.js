@@ -4,9 +4,15 @@ import { DataService } from './modules/data-service.js'
 import { render }      from './render.js'
 
 
-emitter.on('users:submit', (payload) => {
+emitter.on('events:submit', (payload) => {
+  state.error = null
   render()
-  DataService.createUser(payload)
+  DataService.registerEvent(payload)
+})
+
+emitter.on('events:error', (message) => {
+  state.error = message
+  render()
 })
 
 // Boot 
