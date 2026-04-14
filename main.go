@@ -62,9 +62,8 @@ func (app *application) registerEvent(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	
 	// Validate date format and ensure it's in the future
-	today := time.Now()
+	today := time.Now().Truncate(24 * time.Hour)
 	date, err := time.Parse("2006-01-02", input.Date)
 	if err != nil {
 		http.Error(w, "Invalid date format. Please use YYYY-MM-DD.", http.StatusBadRequest)
@@ -141,15 +140,6 @@ func main() {
 			w.WriteHeader(http.StatusMethodNotAllowed)
 		}
 	})
-
-	// Static files — serves index.html, CSS, JS from ./static
-	fs := http.FileServer(http.Dir("./static"))
-	mux.Handle("/", fs)
-
-	addr := ":4000"
-	logger.Info("starting server", "addr", addr)
-
-	err := http.ListenAndServe(addr, mux)
-	logger.Error(err.Error())
+ger.Error(err.Error())
 	os.Exit(1)
 }
